@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.geowealth.scrabble.cli.Args;
 import com.geowealth.scrabble.exceptions.ScrabbleLoadException;
+import com.geowealth.scrabble.exceptions.ScrabbleMatchException;
 import com.geowealth.scrabble.impl.ParallelScrabbler;
 import com.geowealth.scrabble.impl.SequentialScrabbler;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class Scrabble {
         }
     }
 
-    private static void matchWords(Args args) throws ScrabbleLoadException {
+    private static void matchWords(Args args) throws ScrabbleLoadException, ScrabbleMatchException {
 
         Set<String> matchingWords;
 
