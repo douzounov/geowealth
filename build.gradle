@@ -23,10 +23,10 @@ dependencies {
     implementation platform(libs.tika.bom)
     implementation libs.tika.parser.text.module
     implementation libs.commons.io
+    implementation libs.commons.collections4
     testImplementation platform(libs.junit.bom)
     testImplementation libs.junit.jupiter
     testImplementation libs.junit.platform.launcher
-    testImplementation libs.commons.collections4
     testImplementation libs.commons.lang3
     testImplementation libs.commons.math3
 }
