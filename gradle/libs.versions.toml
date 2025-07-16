@@ -1,0 +1,38 @@
+[versions]
+### logging ###
+slf4j-bom = "2.0.17"
+logback-core = "1.5.18"
+logback-classic = "1.5.18"
+### testing ###
+junit-bom = "5.10.0"
+### CLI arguments parsing ###
+jcommander = "2.0"
+### Character set detection ###
+tika-bom = "2.9.2"
+### Apache Commons ###
+commons-io = "2.14.0"
+commons-lang3 = "3.17.0"
+commons-collections4 = "4.4"
+commons-math3 = "3.6"
+
+[libraries]
+### logging ###
+slf4j-bom = { module = "org.slf4j:slf4j-ext", version.ref = "slf4j-bom" }
+slf4j-api = { module = "org.slf4j:slf4j-api" }
+slf4j-ext = { module = "org.slf4j:slf4j-ext" }
+logback-core = { module = "ch.qos.logback:logback-classic", version.ref = "logback-core" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
+### testing ###
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+### CLI arguments parsing ###
+jcommander = { module = "org.jcommander:jcommander", version.ref = "jcommander" }
+### Character set detection ###
+tika-bom = { module = "org.apache.tika:tika-bom", version.ref = "tika-bom" }
+tika-parser-text-module = { module = "org.apache.tika:tika-parser-text-module" }
+### Apache Commons ###
+commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commons-collections4" }
+commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }

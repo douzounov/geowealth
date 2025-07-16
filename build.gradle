@@ -1,0 +1,36 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'com.geowealth.scrabble.main.Scrabble'
+}
+
+group = 'com.geowealth'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform(libs.slf4j.bom)
+    implementation libs.slf4j.api
+    implementation libs.slf4j.ext
+    implementation libs.logback.core
+    implementation libs.logback.classic
+    implementation libs.jcommander
+    implementation platform(libs.tika.bom)
+    implementation libs.tika.parser.text.module
+    implementation libs.commons.io
+    implementation libs.commons.collections4
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testImplementation libs.junit.platform.launcher
+    testImplementation libs.commons.lang3
+    testImplementation libs.commons.math3
+}
+
+test {
+    useJUnitPlatform()
+}
