@@ -2,15 +2,10 @@ package com.geowealth.scrabble.impl;
 
 import com.geowealth.scrabble.cli.Args;
 import com.geowealth.scrabble.exceptions.ScrabbleLoadException;
-import com.geowealth.scrabble.exceptions.ScrabbleMatchException;
-import org.apache.commons.collections4.ListUtils;
 
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A concrete {@link AbstractScrabbler} class which parallelizes the recursive
@@ -34,47 +29,19 @@ public class ParallelScrabbler extends AbstractScrabbler {
      * @return set of matching words
      */
     @Override
-    public Set<String> findMatchingWords() throws ScrabbleMatchException {
+    public Set<String> findMatchingWords() {
 
         getProfiler().start("parallel match");
 
-        // create a candidate words list which will further be divided into
-        // partitions, with each partition processed by a separate thread
-        ArrayList<String> candidateWords = new ArrayList<>(getCandidateWords());
+        // The underlying parallel streams implementation utilizes various heuristics such as data set size,
+        // the cost of processing each element, and the overhead of task creation to determine how and if to
+        // partition the original stream. As a result, it delivers good performance with both small and large
+        // data sets, all while requiring less code compared to manually partitioning the data set, using an
+        // executor service, and submitting tasks to it.
+        var matchingWords = getCandidateWords().parallelStream().filter(this::isWordMatch)
+                .collect(Collectors.toCollection(ConcurrentSkipListSet::new));
 
-        // TODO a decent heuristic, but can also be specified on the command line
-        int numThreads = Runtime.getRuntime().availableProcessors();
-
-        // calculate a partition size that maximizes the number of partitions
-        // without the partition count exceeding the number of threads
-        int partitionSize = !candidateWords.isEmpty() && (candidateWords.size() % numThreads == 0) ?
-                candidateWords.size() / numThreads : (candidateWords.size() / numThreads) + 1;
-
-        ExecutorService exec = Executors.newFixedThreadPool(numThreads);
-        Set<String> matchingWords = new ConcurrentSkipListSet<>();
-
-        // submit each partition as a new task to be executed by the thread pool
-        for (var partition : ListUtils.partition(candidateWords, partitionSize)) {
-            exec.submit(() -> {
-                for (String word : partition) {
-                    if (isWordMatch(word)) {
-                        matchingWords.add(word);
-                    }
-                }
-            });
-        }
-
-        exec.shutdown();
-        try {
-            while (!exec.awaitTermination(1, TimeUnit.SECONDS)) {
-                getLogger().trace("waiting for tasks to complete");
-            }
-        } catch (InterruptedException ie) {
-            throw new ScrabbleMatchException(ie);
-        }
-
-        getProfiler().stop();
-        getProfiler().log();
+        getProfiler().stop().log();
 
         return matchingWords;
     }
