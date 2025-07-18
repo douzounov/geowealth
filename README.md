@@ -46,15 +46,15 @@ To trace the operation of the word matching algorithm, set the logging level of 
 #### Parallelism
 
 ###### Overview
-The sequential algorithm operates efficiently on modern processors when handling real-world dictionaries. Nonetheless, a parallelized version was also developed to enable comparison with the sequential approach. This comparison was conducted using both small real-world dictionaries of up to 500,000 words and large, randomly generated dictionaries ranging from 10 million to 50 million words.
+The sequential algorithm operates efficiently on modern processors when handling real-world dictionaries. Nonetheless, a parallelized version was also developed to enable comparison with the sequential approach. This comparison was conducted using both small real-world dictionaries of up to 500,000 words and large, randomly generated dictionaries ranging from 10 million to 100 million words.
 
 ###### Small dictionaries
-The sequential algorithm has roughly the same performance or is slightly faster than a parallelized version when working with small dictionaries. In this case the benefits of parallelization are completely offset by the multi-threading overhead.
+The sequential algorithm has roughly the same performance as the parallelized version when working with small dictionaries. In such cases the benefits of parallelization are offset by the overhead of multi-threading.
 
 ###### Large dictionaries
-Given the word matching task at hand, parallel processing is only beneficial when dealing with large dictionaries. A basic strategy for parallelizing the task is to create a fixed thread pool and submit the matching of each word as a separate task. Due to the multi-threading overhead related to the large number of tasks, this method offers only a slight performance gain in comparison to the sequential algorithm.
+Given the word matching problem at hand, parallel processing is only beneficial when dealing with large dictionaries. A basic strategy for parallelizing the problem is to create a fixed thread pool, divide the candidate words into several partitions (attempting to maximize the number of partitions but keeping it lower than or equal to the number of threads) and submit each partition as a separate task to the pool. This method achieves about a 3-3.5 speedup (on 8 CPU cores) in comparison to the sequential algorithm.
 
-A better approach (and what was implemented) is to divide the candidate words into several partitions (attempting to maximize the number of partitions but keeping it lower than or equal to the number of threads) and submit each partition as a separate task in the pool. This method achieves a 3.5 speedup (when running on 8 cores) in comparison to the sequential algorithm. By removing some logging, slightly better performance is to be expected, and there are likely other areas where optimization is possible.
+An improved approach (and what was implemented) that achieves similar performance with considerably less code is to utilize parallel streams. This method also has the benefit that, when working with small dictionaries, the underlying parallel streams implementation might opt to process the stream sequentially, avoiding needless parallelization overhead. Note that this solution is effective because the word matching problem is CPU-bound and does not involve any I/O operations.
 
 ### Performance
 
